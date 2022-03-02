@@ -9,19 +9,40 @@ const MainContainer = () => {
   const [movie, setMovie] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [isSelected, setIsSelected] = useState(false);
-  const [search, setSearch] = useState("");
-  const [movieNames, setMovieNames] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [votedPicture, setVotedPicture] = useState(false);
+  const [votedDirector, setVotedDirector] = useState(false);
+  const [votedActor, setVotedActor] = useState(false);
+  const [votedActress, setVotedActress] = useState(false);
+  const [votedSuppActor, setVotedSuppActor] = useState(false);
+  const [votedSuppActress, setVotedSuppActress] = useState(false);
+  const [votedVisualEffects, setVotedVisualEffects] = useState(false);
+  const [votes, setVotes] = useState([]);
 
-  const voteMovie = () => setIsSelected(true);
+  const addVote = (category, title, id) => {
+    return votes.push({ category, title, id });
+  };
 
-  const openModal = () => setIsOpen(true);
+  console.log(votes);
 
-  const closeModal = () => setIsOpen(false);
+  const pushVotes = () => {
+    setVotes(console.log(votes));
+  };
 
-  const handleChange = (e) => {
-    setSearch(e.target.value);
-    encontrarPelicula(e.target.value);
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+    setVotes([]);
+    setVotedPicture(false);
+    setVotedDirector(false);
+    setVotedActor(false);
+    setVotedActress(false);
+    setVotedSuppActor(false);
+    setVotedSuppActress(false);
+    setVotedVisualEffects(false);
   };
 
   const getMovies = async () => {
@@ -29,30 +50,27 @@ const MainContainer = () => {
       .then((res) => res.json())
       .then((movies) => {
         setMovie(movies);
-        setMovieNames(movies.movies);
       })
       .catch((error) => console.log("ERROR"));
   };
-
   useEffect(() => {
     setLoading(true);
     getMovies();
     setLoading(false);
   }, [setMovie]);
 
-  function encontrarPelicula(palabra) {
-    const regexPalabra = new RegExp(palabra, "g");
-    return movieNames.filter((pelicula) => {
-      if (regexPalabra.test(pelicula.title)) {
-        return console.log(pelicula.title);
-      }
-      return false;
-    });
+  function sortMovies(x, y) {
+    if (x.title < y.title) {
+      return -1;
+    }
+    if (x.title > y.title) {
+      return 1;
+    }
+    return 0;
   }
 
   return (
     <Flex
-      //flexDirection="column"
       mb={["30px"]}
       mx={["auto"]}
       border="1px solid gray"
@@ -74,7 +92,7 @@ const MainContainer = () => {
       <Flex justifyContent="center" my={["16px"]}>
         <Box
           width={["90vw"]}
-          maxWidth={["360px", "980px", "980px"]}
+          maxWidth={["", "980px", "980px"]}
           as="input"
           type="text"
           fontSize="16px"
@@ -83,8 +101,10 @@ const MainContainer = () => {
           placeholder="Search a movie tittle..."
           textAlign="left"
           p="11px"
-          value={search}
-          onChange={handleChange}
+          value={searchTerm}
+          onChange={(event) => {
+            setSearchTerm(event.target.value);
+          }}
         />
       </Flex>
 
@@ -94,12 +114,28 @@ const MainContainer = () => {
       {movie &&
         movie?.movies
           ?.slice(0, 5)
+          .sort(sortMovies)
+          .filter((val) => {
+            if (searchTerm === "") {
+              return val;
+            } else if (
+              val.title.toLowerCase().includes(searchTerm.toLowerCase())
+            ) {
+              return val;
+            }
+          })
           .map((mov) => (
             <MovieContainer
               title={mov.title}
               photoUrL={mov.photoUrL}
               key={mov.id}
-              voteMovie={voteMovie}
+              voteMovie={() => [
+                setVotedPicture(true),
+                addVote(mov.category, mov.title, mov.id),
+              ]}
+              id={mov.id}
+              disabled={votedPicture}
+              category={mov.category}
             />
           ))}
 
@@ -107,11 +143,28 @@ const MainContainer = () => {
       {movie &&
         movie?.movies
           ?.slice(5, 10)
+          .sort(sortMovies)
+          .filter((val) => {
+            if (searchTerm === "") {
+              return val;
+            } else if (
+              val.title.toLowerCase().includes(searchTerm.toLowerCase())
+            ) {
+              return val;
+            }
+          })
           .map((mov) => (
             <MovieContainer
               title={mov.title}
               photoUrL={mov.photoUrL}
               key={mov.id}
+              voteMovie={() => [
+                setVotedDirector(true),
+                addVote(mov.category, mov.title, mov.id),
+              ]}
+              id={mov.id}
+              disabled={votedDirector}
+              category={mov.category}
             />
           ))}
 
@@ -119,11 +172,28 @@ const MainContainer = () => {
       {movie &&
         movie?.movies
           ?.slice(10, 15)
+          .sort(sortMovies)
+          .filter((val) => {
+            if (searchTerm === "") {
+              return val;
+            } else if (
+              val.title.toLowerCase().includes(searchTerm.toLowerCase())
+            ) {
+              return val;
+            }
+          })
           .map((mov) => (
             <MovieContainer
               title={mov.title}
               photoUrL={mov.photoUrL}
               key={mov.id}
+              voteMovie={() => [
+                setVotedActor(true),
+                addVote(mov.category, mov.title, mov.id),
+              ]}
+              id={mov.id}
+              disabled={votedActor}
+              category={mov.category}
             />
           ))}
 
@@ -131,11 +201,28 @@ const MainContainer = () => {
       {movie &&
         movie?.movies
           ?.slice(15, 20)
+          .sort(sortMovies)
+          .filter((val) => {
+            if (searchTerm === "") {
+              return val;
+            } else if (
+              val.title.toLowerCase().includes(searchTerm.toLowerCase())
+            ) {
+              return val;
+            }
+          })
           .map((mov) => (
             <MovieContainer
               title={mov.title}
               photoUrL={mov.photoUrL}
               key={mov.id}
+              voteMovie={() => [
+                setVotedActress(true),
+                addVote(mov.category, mov.title, mov.id),
+              ]}
+              id={mov.id}
+              disabled={votedActress}
+              category={mov.category}
             />
           ))}
 
@@ -143,11 +230,28 @@ const MainContainer = () => {
       {movie &&
         movie?.movies
           ?.slice(20, 25)
+          .sort(sortMovies)
+          .filter((val) => {
+            if (searchTerm === "") {
+              return val;
+            } else if (
+              val.title.toLowerCase().includes(searchTerm.toLowerCase())
+            ) {
+              return val;
+            }
+          })
           .map((mov) => (
             <MovieContainer
               title={mov.title}
               photoUrL={mov.photoUrL}
               key={mov.id}
+              voteMovie={() => [
+                setVotedSuppActor(true),
+                addVote(mov.category, mov.title, mov.id),
+              ]}
+              id={mov.id}
+              disabled={votedSuppActor}
+              category={mov.category}
             />
           ))}
 
@@ -155,11 +259,28 @@ const MainContainer = () => {
       {movie &&
         movie?.movies
           ?.slice(25, 30)
+          .sort(sortMovies)
+          .filter((val) => {
+            if (searchTerm === "") {
+              return val;
+            } else if (
+              val.title.toLowerCase().includes(searchTerm.toLowerCase())
+            ) {
+              return val;
+            }
+          })
           .map((mov) => (
             <MovieContainer
               title={mov.title}
               photoUrL={mov.photoUrL}
               key={mov.id}
+              voteMovie={() => [
+                setVotedSuppActress(true),
+                addVote(mov.category, mov.title, mov.id),
+              ]}
+              id={mov.id}
+              disabled={votedSuppActress}
+              category={mov.category}
             />
           ))}
 
@@ -167,43 +288,48 @@ const MainContainer = () => {
       {movie &&
         movie?.movies
           ?.slice(30)
+          .sort(sortMovies)
+          .filter((val) => {
+            if (searchTerm === "") {
+              return val;
+            } else if (
+              val.title.toLowerCase().includes(searchTerm.toLowerCase())
+            ) {
+              return val;
+            }
+          })
           .map((mov) => (
             <MovieContainer
               title={mov.title}
               photoUrL={mov.photoUrL}
               key={mov.id}
+              id={mov.id}
+              voteMovie={() => [
+                setVotedVisualEffects(true),
+                addVote(mov.category, mov.title, mov.id),
+              ]}
+              disabled={votedVisualEffects}
+              category={mov.category}
             />
           ))}
+      <Flex width={["100%"]} justifyContent="center">
+        <SubmitButton
+          openModal={openModal}
+          isOpen={isOpen}
+          pushVotes={pushVotes}
+        />
+      </Flex>
 
-      <SubmitButton openModal={openModal} isOpen={isOpen} />
-
-      <ModalVotesSubmitted isOpen={isOpen} closeModal={closeModal} />
+      <ModalVotesSubmitted
+        isOpen={isOpen}
+        closeModal={closeModal}
+        votes={votes}
+      />
     </Flex>
   );
 };
 
 export default MainContainer;
-
-const SearchField = ({ search, handleChange }) => {
-  return (
-    <Flex justifyContent="center" my={["16px"]}>
-      <Box
-        width={["90vw"]}
-        maxWidth={["360px", "980px", "980px"]}
-        as="input"
-        type="text"
-        fontSize="16px"
-        borderRadius="4px"
-        border="1px solid gray"
-        placeholder="Search a movie tittle..."
-        textAlign="left"
-        p="11px"
-        value={console.log(search)}
-        onChange={handleChange}
-      />
-    </Flex>
-  );
-};
 
 const Category = ({ value }) => {
   return (
@@ -213,7 +339,7 @@ const Category = ({ value }) => {
       borderRadius="2px"
       border="1px solid gray"
       width={["91vw"]}
-      maxWidth={["360px", "980px", "980px"]}
+      maxWidth={["", "980px", "980px"]}
     >
       <Typography
         borderRadius="4px"
@@ -229,7 +355,7 @@ const Category = ({ value }) => {
   );
 };
 
-const SubmitButton = ({ openModal }) => {
+const SubmitButton = ({ openModal, pushVotes }) => {
   return (
     <Flex
       backgroundColor="#fac612"
@@ -241,13 +367,15 @@ const SubmitButton = ({ openModal }) => {
       py="5px"
       my="15px"
       onClick={openModal}
+      onSubmit={pushVotes}
+      className="btn-submit"
     >
       <Typography variant="body1Regular">SUBMIT VOTES</Typography>
     </Flex>
   );
 };
 
-const ModalVotesSubmitted = ({ isOpen, closeModal }) => {
+const ModalVotesSubmitted = ({ isOpen, closeModal, votes }) => {
   return (
     <Box
       position="fixed"
@@ -260,9 +388,7 @@ const ModalVotesSubmitted = ({ isOpen, closeModal }) => {
       className={`modal ${isOpen && "is-open"}`}
     >
       <Box
-        //position="absolute"
         width="80vw"
-        //height="80vh"
         backgroundColor="white"
         justifyContent="start"
         py="15px"
@@ -271,24 +397,27 @@ const ModalVotesSubmitted = ({ isOpen, closeModal }) => {
         maxWidth={["680px"]}
         className={`modal ${isOpen && "is-open"}`}
       >
-        <Typography variant="h3" mb="15px">
+        <Typography variant={["h4", "h3"]} mb="15px">
           VOTES SUBMITTED
         </Typography>
         <Flex flexDirection="column" mt="12px">
           <Typography variant="body1Bold" textAlign="left" mb="8px">
             Your votes:
           </Typography>
-          <Typography as="ul" ml="24px" fontSize="24px">
-            <Typography as="li" textAlign="left" mb="8px">
-              voto1
-            </Typography>
-            <Typography as="li" textAlign="left" mb="8px">
-              voto1
-            </Typography>
-            <Typography as="li" textAlign="left" mb="8px">
-              voto1
-            </Typography>
+          <Typography as="ul" ml="24px" fontSize={["18px", "24px"]}>
+            {votes.length > 0 ? (
+              votes.map((vote) => (
+                <Typography as="li" textAlign="left" mb="8px" key={vote.id}>
+                  <b>{vote.title}</b> - {vote.category}
+                </Typography>
+              ))
+            ) : (
+              <h1 style={{ color: "gray", margin: "12px 0px" }}>
+                You haven't vote yet
+              </h1>
+            )}
           </Typography>
+
           <Flex
             backgroundColor="#fac612"
             as="button"
@@ -301,6 +430,7 @@ const ModalVotesSubmitted = ({ isOpen, closeModal }) => {
             alignSelf="flex-end"
             mr={["0px", "15px", "20px"]}
             onClick={closeModal}
+            className="btn-close"
           >
             <Typography variant="body1Bold">Close</Typography>
           </Flex>

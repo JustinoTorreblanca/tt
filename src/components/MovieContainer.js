@@ -1,21 +1,24 @@
 import Flex from "./atoms/Flex";
 import Typography from "./atoms/Typography";
+import "./globalStyles.css";
 
-const MovieContainer = ({ title, photoUrL, id, voteMovie } = {}) => {
+const MovieContainer = ({ title, photoUrL, id, voteMovie, disabled } = {}) => {
   return (
     <Flex flexWrap={["wrap"]} justifyContent="center">
       <MovieCard
         title={title}
         photoUrL={photoUrL}
         key={id}
-        onClick={voteMovie}
+        voteMovie={voteMovie}
+        id={id}
+        disabled={disabled}
       />
     </Flex>
   );
 };
 export default MovieContainer;
 
-const MovieCard = ({ photoUrL, title, id, voteMovie } = {}) => {
+const MovieCard = ({ photoUrL, title, id, voteMovie, disabled } = {}) => {
   //debugger;
 
   return (
@@ -35,14 +38,19 @@ const MovieCard = ({ photoUrL, title, id, voteMovie } = {}) => {
       <Typography variant={["body1Regular"]}>{title}</Typography>
 
       <Flex
+        as="img"
         borderRadius="50%"
         height="140px"
         width="120px"
         border="1px solid gray"
-        backgroundImage={`url(${photoUrL})`}
+        //backgroundImage={`url(${photoUrL})`}
+        src={photoUrL}
         backgroundSize="cover"
         backgroundPosition="center"
         backgroundRepeat="no-repeat"
+        className="movie-img"
+        alt={`${title} poster`}
+        title={title}
       />
       <Flex
         as="button"
@@ -53,7 +61,9 @@ const MovieCard = ({ photoUrL, title, id, voteMovie } = {}) => {
         justifyContent="center"
         p="8px"
         borderRadius="8px"
-        onClick={voteMovie}
+        onClick={() => voteMovie()}
+        disabled={disabled}
+        className="btn-vote"
       >
         <Typography variant="h6">Vote for this movie</Typography>
       </Flex>

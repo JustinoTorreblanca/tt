@@ -46,10 +46,9 @@ const Typography = styled.span.attrs((props) => ({
       },
       h4: {
         fontFamily: "Montserrat",
-        fontWeight: "400",
+        fontWeight: "700",
         fontStyle: "normal",
-        fontSize: "30px",
-        lineHeight: "30px",
+        fontSize: "21px",
       },
       h5: {
         fontFamily: "Montserrat",

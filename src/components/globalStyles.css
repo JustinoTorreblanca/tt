@@ -7,3 +7,38 @@
   justify-content: center;
   flex-direction: column;
 }
+div.active {
+  box-shadow: 0px 4px 4px 2px green;
+}
+
+.btn-close:hover {
+  cursor: pointer;
+  transform: scale(1.01);
+  transition: all 0.01s;
+  opacity: 0.8;
+}
+.btn-submit:hover {
+  cursor: pointer;
+  transform: scale(1.01);
+  transition: all 0.01s;
+  opacity: 0.7;
+}
+.btn-vote:hover {
+  cursor: pointer;
+  transform: scale(1.01);
+  transition: all 0.01s;
+  opacity: 0.7;
+}
+.btn-vote:disabled:hover {
+  cursor: unset;
+  transform: unset;
+  transition: unset;
+  opacity: unset;
+}
+.movie-img:hover {
+  transform: scale(1.2);
+  transition: all 0.1s;
+}
+btn:disabled {
+  cursor: none;
+}
